@@ -196,19 +196,23 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 
 	var nextArrivalRegular = 
 			nextArrivalhours = nextArrival.split(":")[0];
+			nextArrivalminutes = nextArrival.split(":")[1];
 			console.log("Hours place of next arrival: " + nextArrivalhours);
 			if (nextArrivalhours>12 && nextArrivalhours != 24){
-				nextArrivalRegular = nextArrivalhours-12 + ":" + nextArrival.split(":")[1] + ("p.m.");
+				nextArrivalRegular = nextArrivalhours-12 + ":" + nextArrivalminutes + ("p.m.");
 			}
 
 			else if (nextArrivalhours === 24) {
-				nextArrivalRegular = (nextArrivalhours-12) + ":" + nextArrival.split(":")[1] + ("a.m.");
+				nextArrivalRegular = (nextArrivalhours-12) + ":" + nextArrivalminutes + ("a.m.");
 					alert("Next arrival hours-place is 24!");
 					console.log("Next arrival hours - 12 from else if statement: " + nextArrivalhours-12);
 			}
 
+			else if (nextArrivalhours === 12) {
+					nextArrivalRegular = nextArrivalhours + ":" + nextArrivalminutes + ("p.m.");
+			}
 			else {
-				nextArrivalRegular = parseInt(nextArrivalhours) + ":" + nextArrival.split(":")[1] + ("a.m.");
+				nextArrivalRegular = parseInt(nextArrivalhours) + ":" + nextArrivalminutes + ("a.m.");
 
 			}
 		console.log(nextArrivalRegular);
