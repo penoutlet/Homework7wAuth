@@ -192,8 +192,29 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	var minutesAway = nextArrivalConverted - trainAddedConverted; 
 	console.log("Minutes away (after converting both times into minutes): " + minutesAway);
 	
+	// to convert military time into regular time. 
+
+	var nextArrivalRegular = 
+			nextArrivalhours = nextArrival.split(":")[0];
+			console.log("Hours place of next arrival: " + nextArrivalhours);
+			if (nextArrivalhours>12 && nextArrivalhours != 24){
+				nextArrivalRegular = nextArrivalhours-12 + ":" + nextArrival.split(":")[1] + ("p.m.");
+			}
+
+			else if (nextArrivalhours === 24) {
+				nextArrivalRegular = (nextArrivalhours-12) + ":" + nextArrival.split(":")[1] + ("a.m.");
+					alert("Next arrival hours-place is 24!");
+					console.log("Next arrival hours - 12 from else if statement: " + nextArrivalhours-12);
+			}
+
+			else {
+				nextArrivalRegular = parseInt(nextArrivalhours) + ":" + nextArrival.split(":")[1] + ("a.m.");
+
+			}
+		console.log(nextArrivalRegular);
+
 	$(".table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" +
-	trainFrequency	 + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
+	trainFrequency	 + "</td><td>" + nextArrival + " " + "(" + nextArrivalRegular + ")" + "</td><td>" + minutesAway + "</td></tr>");
 
 
 });
