@@ -165,28 +165,31 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	// current time/time of submission converted into useable time.
 	var dateAdded = moment(new Date(childSnapshot.val().dateAdded));
 	var dateAddedConverted = moment(dateAdded).format('hh:mm');
+	
+	// convert dateAdded (time added) into military time. 
 	var dateAddedSplit = dateAddedConverted.split(":");
 	var dateAddedHours = parseInt(dateAddedSplit[0]) + 12;
 	var dateAddedMilitary = dateAddedHours + ":" + dateAddedSplit[1];
-		console.log("Date added: " + dateAddedConverted);
-		console.log("split date.added: " + dateAddedSplit);
-			console.log("Date added in military time: " + dateAddedMilitary);
-// Below is the code to get the minutesAway
+		console.log("Date added in military time: " + dateAddedMilitary);
 
-// split the two times to make the math easier. 
+
+// Below is the code to get the minutesAway.
+
+// split the two times, as done above with the time the train was added, to make the math easier. 
 	var nextArrivalsplit = nextArrival.split(":");
 		console.log("Time now: " + dateAddedSplit);
 		console.log("Next arrival: " + nextArrivalsplit);
 	
-	// math to turn the hours portion of the split into minutes
-	// take the first index, hours, and convert into minutes by * 60
-	// then add the minutes portion of the index
+	// To make the calculation of minutes away easier, I'm converting both military times into "minutes into the day".
+	// so 01:00 is 60 minutes into the day, 02:00 is 120. If it's currently 01:00 and the train arrives at 02:00,
+	// this will subtract 60 from 120 to ge 60 minutes away.  
 	var nextArrivalConverted = (parseInt(nextArrivalsplit[0]) * 60) + parseInt(nextArrivalsplit[1]);
 
 	console.log("Next arrival time converted into minutes: " + nextArrivalConverted);
 
 
 	// now, convert the time the train was added into minutes.
+
 	var dateAddedMilitarySplit = dateAddedMilitary.split(":"); 
 	var dateAddedMilitaryHours = dateAddedMilitarySplit[0];
 	var dateAddedMilitaryMinutes = dateAddedMilitarySplit[1];
@@ -201,11 +204,14 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 
 
 
-	// to get minutes away, subtract time added from next arrival.
+	// to get minutes away, subtract the times converted into minutes, time added from next arrival.
 	var minutesAway = nextArrivalConverted - trainAddedConverted; 
 	console.log("Minutes away (after converting both times into minutes): " + minutesAway);
 	
-	// to convert military time into regular time. 
+	
+
+	// to convert military time into regular time... not working for 12:01-12:59, gives a.m. instead of p.m. Not working for
+	// 24 either. Gives 24:00 a.m. instead of 12:00 a.m. Must be skipping the middle else if statements.  
 
 	var nextArrivalRegular = 
 			nextArrivalhours = nextArrival.split(":")[0];
