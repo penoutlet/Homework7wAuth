@@ -184,9 +184,16 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 
 
 	// now, convert the time the train was added into minutes. 
-	var trainAddedsplit = dateAddedSplit;
-	var trainAddedConverted = parseInt(trainAddedsplit[0]* (60)) + parseInt(trainAddedsplit[1]);
+	var trainAddedConverted = parseInt(dateAddedSplit[0]* (60)) + parseInt(dateAddedSplit[1]);
+			
+
 	console.log("Time train was added converted into minutes: " + trainAddedConverted);
+
+
+
+
+
+
 
 	// to get minutes away, subtract time added from next arrival.
 	var minutesAway = nextArrivalConverted - trainAddedConverted; 
@@ -197,8 +204,9 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	var nextArrivalRegular = 
 			nextArrivalhours = nextArrival.split(":")[0];
 			nextArrivalminutes = nextArrival.split(":")[1];
+			
 			console.log("Hours place of next arrival: " + nextArrivalhours);
-			if (nextArrivalhours>12 && nextArrivalhours != 24){
+			if (nextArrivalhours>12 && nextArrivalhours < 24){
 				nextArrivalRegular = nextArrivalhours-12 + ":" + nextArrivalminutes + ("p.m.");
 			}
 
@@ -209,8 +217,8 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 			}
 
 			else if (nextArrivalhours === 12) {
-					nextArrivalRegular = nextArrivalhours + ":" + nextArrivalminutes + ("p.m.");
-			}
+					nextArrivalRegular = nextArrival + ("p.m.");
+			}		
 			else {
 				nextArrivalRegular = parseInt(nextArrivalhours) + ":" + nextArrivalminutes + ("a.m.");
 
