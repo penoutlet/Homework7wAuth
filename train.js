@@ -34,8 +34,10 @@ firebase.auth().signInWithPopup(provider).then(function(result) {
   // The firebase.auth.AuthCredential type that was used.
   var credential = error.credential;
   // ...
+
 });
 
+firebase.auth().signInWithPopup(provider);
 
 
 // Save the database 
@@ -50,6 +52,7 @@ $("#add-train-btn").on("click", function(){
 	var trainDestination = $("#destination-input").val().trim();
 		var trainFrequency = $("#frequency-input").val().trim();
 
+// The below statements handle incorrect input. ===================
 	if (trainName === "") {
 	alert("Please fill in all fields.")
 	return;
@@ -64,6 +67,10 @@ $("#add-train-btn").on("click", function(){
 	alert("Please fill in all fields.")
 	return;
 }
+	else if (trainFrequency.match(/[a-z]/i)) {
+		alert("Invalid frequency input. Please use numbers only.")
+		return;
+	}
 
 
 	var nextArrival = 
@@ -85,6 +92,10 @@ $("#add-train-btn").on("click", function(){
 		alert("Invalid time format. Enter HH:mm please.");
 		return;
 }
+		else if (arrivalinput.split(":")[0]>24) {
+		alert("Invalid time format. Enter HH:mm, miliary time, please.");
+		return;
+				}
 		else {
 		nextArrival = arrivalinput;
 }
@@ -95,7 +106,7 @@ $("#add-train-btn").on("click", function(){
 	console.log(nextArrival);
 	console.log(trainFrequency);
 
-// object to be pushed to firebase
+// object to be pushed to firebase, with the timestamp added.
 var trainNew = {
 		name: trainName,
 		destination: trainDestination,
@@ -151,22 +162,12 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 
 	// var minutesAway calculation
 
-	// current time/time of submission converted into military time.
+	// current time/time of submission converted into useable time.
 	var dateAdded = moment(new Date(childSnapshot.val().dateAdded));
 	var dateAddedConverted = moment(dateAdded).format('hh:mm');
 	var dateAddedSplit = dateAddedConverted.split(":");
 		console.log("split date.added: " + dateAddedSplit);
-	// var stillconverting = parseInt(converted3[0]) + 12;
-	// 	console.log("parse int of the split: " + stillconverting);
-	// 	 converted3[0] = stillconverting;
-	// 	 converted3 = converted3[0] + ":" + converted3[1];
-
-	// 	console.log("Should be 14:19: " + converted3);
-
-	// 	console.log("Time added: " + converted3);
-
-
-
+	
 // Below is the code to get the minutesAway
 
 // split the two times to make the math easier. 
@@ -177,8 +178,8 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	// math to turn the hours portion of the split into minutes
 	// take the first index, hours, and convert into minutes by * 60
 	// then add the minutes portion of the index
-	var nextArrivalConverted = (parseInt(nextArrivalsplit[0]) * 60) 
-	 + parseInt(nextArrivalsplit[1]);
+	var nextArrivalConverted = (parseInt(nextArrivalsplit[0]) * 60) + parseInt(nextArrivalsplit[1]);
+
 	console.log("Next arrival time converted into minutes: " + nextArrivalConverted);
 
 
@@ -190,67 +191,12 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	// to get minutes away, subtract time added from next arrival.
 	var minutesAway = nextArrivalConverted - trainAddedConverted; 
 	console.log("Minutes away (after converting both times into minutes): " + minutesAway);
-	// parse Int to take the HH of HH:mm, into integers and do math with them. 
-		// if the time is 2:40, andthe next train is at 3, my math will give me 60 minutes
-		// bc 3-2 is one 
-
-
-		// var hoursAway =  ((parseInt(nextArrivalsplit[0]) - parseInt(converted3split[0])));
-		// var convertedHours = hoursAway * 60; 
-		// console.log("Hours away: " + hoursAway);
 	
-
-
-
-
-	// take the :mm ( minutes) portion and do the math with them. 
-	
-		// if the time is 2:40, andthe next train is at 3, my math will give me 60 minutes
-		// bc 3-2 is one 
-
-// 	var minutesAwayCalculation = 
-// 		placeholder = (parseInt(nextArrivalsplit[1]) - parseInt(converted3split[1]));
-// 		if (placeholder<0) { 
-// 		minutesAwayCalculation = placeholder * -1; 
-// 	}
-
-// 	else if (nextArrivalsplit[1] === 00) {
-// 		nextArrivalsplit[1] + 100;
-// 	}	
-// 	else {
-// 		return;
-// 	};
-// console.log("Placeholder value: " + placeholder);
-	
-// 	console.log("Minutes away: " + minutesAway0);
-	
-// var minutesAway = hoursAway + minutesAway0;
-// console.log("total minutes away: " + minutesAway);
-
-
-// 	console.log(parseInt(nextArrival[0]));
-// 	console.log(parseInt(converted2[0]));
-
-	// to convert time of nenxt arrival from military to regular. 
-
-	
-	// need to calculate Minutesaway variable. To do this, get the dateAdded timestamp and convert it using moment.js. This will give
-	// the current time. Make sure it's in military time. Then subtract this converted timestamp from the time of firstTrain (Nextarrival) 
-	// need to convert next arrival time from military to regular
-	// Add each train's data into the table
-
 	$(".table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" +
 	trainFrequency	 + "</td><td>" + nextArrival + "</td><td>" + minutesAway + "</td></tr>");
 
 
 });
-
-// Functions 
-// to give error message if entered time isn't in right format
-// function timeformatchecker (nextArrival) {
-
-// 	if (nextArrival 
-// };
 
 
 
