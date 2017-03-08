@@ -166,8 +166,11 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	var dateAdded = moment(new Date(childSnapshot.val().dateAdded));
 	var dateAddedConverted = moment(dateAdded).format('hh:mm');
 	var dateAddedSplit = dateAddedConverted.split(":");
+	var dateAddedHours = parseInt(dateAddedSplit[0]) + 12;
+	var dateAddedMilitary = dateAddedHours + ":" + dateAddedSplit[1];
+		console.log("Date added: " + dateAddedConverted);
 		console.log("split date.added: " + dateAddedSplit);
-	
+			console.log("Date added in military time: " + dateAddedMilitary);
 // Below is the code to get the minutesAway
 
 // split the two times to make the math easier. 
@@ -183,10 +186,13 @@ database.ref().on("child_added", function (childSnapshot, prevChildKey){
 	console.log("Next arrival time converted into minutes: " + nextArrivalConverted);
 
 
-	// now, convert the time the train was added into minutes. 
-	var trainAddedConverted = parseInt(dateAddedSplit[0]* (60)) + parseInt(dateAddedSplit[1]);
+	// now, convert the time the train was added into minutes.
+	var dateAddedMilitarySplit = dateAddedMilitary.split(":"); 
+	var dateAddedMilitaryHours = dateAddedMilitarySplit[0];
+	var dateAddedMilitaryMinutes = dateAddedMilitarySplit[1];
+	var trainAddedConverted = parseInt(dateAddedMilitaryHours* (60)) + parseInt(dateAddedMilitaryMinutes);
 			
-
+	console.log("Time train was added in military time: " + dateAddedMilitary);
 	console.log("Time train was added converted into minutes: " + trainAddedConverted);
 
 
